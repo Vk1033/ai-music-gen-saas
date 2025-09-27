@@ -11,6 +11,17 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+    MODAL_KEY: z.string(),
+    MODAL_SECRET: z.string(),
+
+    B2_BUCKET_NAME: z.string(),
+    B2_APP_KEY_ID: z.string(),
+    B2_APP_KEY: z.string(),
+    B2_ENDPOINT: z.string(),
+
+    GENERATE_WITH_LYRICS: z.string(),
+    GENERATE_FROM_DESCRIBED_LYRICS: z.string(),
+    GENERATE_FROM_DESCRIPTION: z.string(),
   },
 
   /**
@@ -30,6 +41,17 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+    MODAL_KEY: process.env.MODAL_KEY,
+    MODAL_SECRET: process.env.MODAL_SECRET,
+
+    B2_BUCKET_NAME: process.env.B2_BUCKET_NAME,
+    B2_APP_KEY_ID: process.env.B2_APP_KEY_ID,
+    B2_APP_KEY: process.env.B2_APP_KEY,
+    B2_ENDPOINT: process.env.B2_ENDPOINT,
+
+    GENERATE_WITH_LYRICS: process.env.GENERATE_WITH_LYRICS,
+    GENERATE_FROM_DESCRIBED_LYRICS: process.env.GENERATE_FROM_DESCRIBED_LYRICS,
+    GENERATE_FROM_DESCRIPTION: process.env.GENERATE_FROM_DESCRIPTION,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
