@@ -1,6 +1,3 @@
-[submodule "frontend"]
-	path = frontend
-	url = https://github.com/Vk1033/ai-music-gen-frontend.git
 [submodule "backend"]
 	path = backend
 	url = https://github.com/Vk1033/ai-music-gen-backend.git
