@@ -47,7 +47,7 @@ model Song {
   prompt            String?
   lyrics            String?
   fullDescribedSong String?
-  DescribedLyrics   String?
+  describedLyrics   String?
   guidanceScale     Float?
   inferStep         Float?
   audioDuration     Float?
