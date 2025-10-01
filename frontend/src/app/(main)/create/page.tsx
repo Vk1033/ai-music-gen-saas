@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import CreateSong from "~/components/create";
+import SongPanel from "~/components/create/song-panel";
 import { auth } from "~/lib/auth";
 
 export default async function Page() {
@@ -11,9 +11,8 @@ export default async function Page() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <p>Dashboard</p>
-      <CreateSong />
-    </main>
+    <div className="flex h-full flex-col lg:flex-row">
+      <SongPanel />
+    </div>
   );
 }
