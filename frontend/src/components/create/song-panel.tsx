@@ -6,9 +6,9 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Loader2, Music, Plus } from "lucide-react";
 import { Switch } from "../ui/switch";
-import { set } from "better-auth";
 import { Badge } from "../ui/badge";
-import { B } from "node_modules/better-auth/dist/shared/better-auth.4SXCyo06";
+import { toast } from "sonner";
+import { generateSong, type GenerateRequest } from "~/actions/generation";
 
 const inspirationTags = [
   "80s synth-pop",
@@ -64,6 +64,47 @@ export default function SongPanel() {
       } else {
         setStyleInput(styleInput + ", " + tag);
       }
+    }
+  };
+
+  const handleCreate = async () => {
+    if (mode == "simple" && !description.trim()) {
+      toast.error("Please enter a description for your song.");
+      return;
+    }
+    if (mode == "custom" && !styleInput.trim()) {
+      toast.error("Please add some styles to your song.");
+      return;
+    }
+
+    let requestBody: GenerateRequest;
+
+    if (mode == "simple") {
+      requestBody = {
+        fullDescribedSong: description,
+        instrumental,
+      };
+    } else {
+      requestBody = {
+        prompt: styleInput,
+        lyrics: lyricsMode === "write" ? lyrics : undefined,
+        describedLyrics: lyricsMode === "auto" ? lyrics : undefined,
+        instrumental,
+      };
+    }
+
+    try {
+      setLoading(true);
+      await generateSong(requestBody);
+      setDescription("");
+      setInstrumental(false);
+      setLyrics("");
+      setStyleInput("");
+      toast.success("Your song has been queued for generation!");
+    } catch {
+      toast.error("An error occurred while creating your song.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -209,7 +250,8 @@ export default function SongPanel() {
 
       <div className="border-t p-4">
         <Button
-          disabled={loading || description.trim() === ""}
+          onClick={handleCreate}
+          disabled={loading}
           size="lg"
           className="w-full cursor-pointer bg-gradient-to-r from-orange-500 to-pink-500 font-medium text-white hover:from-orange-600 hover:to-pink-600"
         >

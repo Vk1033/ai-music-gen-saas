@@ -4,7 +4,7 @@ import { env } from "~/env";
 
 export const generateSong = inngest.createFunction(
   {
-    id: "generate-song",
+    id: "generate-song-event",
     concurrency: {
       limit: 1,
       key: "event.data.userId",
