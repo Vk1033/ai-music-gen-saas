@@ -2,6 +2,7 @@ import { Music } from "lucide-react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getPresignedUrl } from "~/actions/generation";
+import { SongCard } from "~/components/home/song-card";
 import { auth } from "~/lib/auth";
 import { db } from "~/server/db";
 
@@ -12,10 +13,10 @@ export default async function Page() {
     redirect("/auth/sign-in");
   }
 
-  const userId = session?.user.id;
-
   const songs = await db.song.findMany({
-    where: { published: true },
+    where: {
+      published: true,
+    },
     include: {
       user: {
         select: {
@@ -28,8 +29,17 @@ export default async function Page() {
         },
       },
       categories: true,
+      likes: session.user.id
+        ? {
+            where: {
+              userId: session.user.id,
+            },
+          }
+        : false,
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: {
+      createdAt: "desc",
+    },
     take: 100,
   });
 
@@ -86,5 +96,35 @@ export default async function Page() {
     );
   }
 
-  return <div></div>;
+  return (
+    <div className="p-4">
+      <h1 className="text-3xl font-bold tracking-tight">Discover Music</h1>
+
+      {/* Trending songs */}
+      {trendingSongs.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold">Trending</h2>
+          <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {trendingSongs.map((song) => (
+              <SongCard key={song.id} song={song} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Categories */}
+      {Object.entries(categorizedSongs)
+        .slice(0, 5)
+        .map(([category, songs]) => (
+          <div key={category} className="mt-6">
+            <h2 className="text-xl font-semibold">{category}</h2>
+            <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {songs.map((song) => (
+                <SongCard key={song.id} song={song} />
+              ))}
+            </div>
+          </div>
+        ))}
+    </div>
+  );
 }
