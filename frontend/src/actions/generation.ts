@@ -65,9 +65,33 @@ export default async function queueSong(
   });
 }
 
+export async function getPlayUrl(songId: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) redirect("/auth/sign-in");
+
+  const song = await db.song.findFirstOrThrow({
+    where: {
+      id: songId,
+      OR: [{ published: true }, { userId: session.user.id }],
+      s3Key: { not: null },
+    },
+    select: { s3Key: true },
+  });
+
+  await db.song.update({
+    where: { id: songId },
+    data: { listenCount: { increment: 1 } },
+  });
+
+  return await getPresignedUrl(song.s3Key!);
+}
+
 export async function getPresignedUrl(key: string) {
   const s3Client = new S3Client({
-    region: "region-not-required",
+    region: "region",
     endpoint: env.B2_ENDPOINT,
     credentials: {
       accessKeyId: env.B2_KEY_ID,
